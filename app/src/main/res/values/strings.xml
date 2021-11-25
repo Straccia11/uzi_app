@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Uzi v2</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="clock_display">Show Clock</string>
+    <string name="switch_alarm">Set Alarm</string>
+    <string name="stop_alarm">Stop</string>
+</resources>
