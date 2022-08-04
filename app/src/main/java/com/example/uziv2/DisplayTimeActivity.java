@@ -1,15 +1,11 @@
 package com.example.uziv2;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
-import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,7 +24,7 @@ public class DisplayTimeActivity extends AppCompatActivity {
         // final Context context = this;
 
         // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
+        // Intent intent = getIntent();
         // String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         //final boolean[] alarmOff = {true};
 
@@ -46,7 +42,7 @@ public class DisplayTimeActivity extends AppCompatActivity {
                 //Display date
                 Date date = Calendar.getInstance().getTime();
                 DateFormat dateFormatDisp = new SimpleDateFormat("HH:mm:ss");
-                DateFormat dateFormatAlarm = new SimpleDateFormat("HH:mm");
+                // DateFormat dateFormatAlarm = new SimpleDateFormat("HH:mm");
                 String strDateDisp = dateFormatDisp.format(date);
                 textView.setText(strDateDisp);
             }

@@ -6,13 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,8 @@ public class AlarmService extends Service {
 
     private boolean[] alarmStreamOccupied = {false};
     private Timer timer;
-    String message;
+    public int idx;
+    private String message;
 
     public AlarmService() {
     }
@@ -35,7 +35,8 @@ public class AlarmService extends Service {
         super.onStartCommand(intent, flags, startId);
 
         Toast.makeText(getApplicationContext(), "Alarm service launched",Toast.LENGTH_SHORT).show();
-        message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        message = intent.getStringExtra("alarmTime");
+        idx = intent.getIntExtra("alarmIdx", 0);
 
         setNotification();
 
@@ -55,6 +56,7 @@ public class AlarmService extends Service {
                     } else {
                         Intent dialogIntent = new Intent(getApplicationContext(), AlarmActivity.class);
                         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        dialogIntent.putExtra("alarmIdx", idx) ;
                         startActivity(dialogIntent);
                         // Shutting down
                         stopSelf();
@@ -81,7 +83,7 @@ public class AlarmService extends Service {
     private void setNotification() {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         // Intent
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         // Definition of the notification channel (ONLY FOR APIS 26+)
         CharSequence name = "Uzi";
@@ -96,10 +98,10 @@ public class AlarmService extends Service {
 
         // Definition of the notification
         Notification notification =
-                new Notification.Builder(this, "uzi")
+                new NotificationCompat.Builder(this, "uzi")
                         .setContentTitle("Alarm Ongoing")
                         .setContentText("Set for "+message)
-                        //.setSmallIcon(R.drawable.icon)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentIntent(pendingIntent)
                         .setTicker("wtf")
                         .build();

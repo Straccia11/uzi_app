@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    tools:ignore="UseSwitchCompatOrMaterialXml">
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_page_rootview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    tools:ignore="UseSwitchCompatOrMaterialXml"> -->
+
+
+    <EditText
+        android:id="@+id/editTextTextPersonName"
+        android:layout_width="235dp"
+        android:layout_height="89dp"
+        android:layout_marginTop="548dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="151dp"
+        android:layout_height="67dp"
+        android:onClick="dispClock"
+        android:text="@string/clock_display"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046" />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:tag="1"
+        android:layout_width="175dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="144dp"
+        android:text="@string/switch1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- <Button
+        android:id="@+id/button3"
+        android:text="Alarm"
+        android:drawableLeft="@drawable/icon_alarm"
+        android:textAllCaps="false" /> -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
