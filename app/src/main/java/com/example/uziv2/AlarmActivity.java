@@ -25,7 +25,7 @@ import java.util.Random;
 
 public class AlarmActivity extends AppCompatActivity {
 
-    private final int alarmDuration = 10;
+    private final int alarmDuration = 30;
     //private boolean interrupt = false;
     private Ringtone ringtone;
     private Vibrator vib;
@@ -140,7 +140,7 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
     // Used by the stop_alarm button
-    public void terminateAlarm(View view) { //TODO : arrange the button so that the activity stops
+    public void terminateAlarm(View view) { //TODO : arrange the button so that the activity stops and the alarm is set to false
         interruptAlarm();
         MainActivity.isAlarmOn[alarmIdx] = false;
         finish();

@@ -3,11 +3,13 @@ package com.example.uziv2;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -20,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.uziv2.MESSAGE";
     public static final int N_ALARMS_MAX = 4;
     public static boolean[] isAlarmOn;
+    public static int[][] timeOfAlarm;
     private ViewPager pager ;
-    private int nAlarms = 1;
+    public static int nAlarms = 1;
 
 
 
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         isAlarmOn = new boolean[N_ALARMS_MAX] ; // by default all values are false
+        timeOfAlarm = new int[N_ALARMS_MAX][2] ;
+
 
         requestPerm();
         this.configureViewPager();
@@ -41,27 +46,45 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() { // TODO : actualize the switch when the alarm is set off + register alarms even after closing the app
         super.onRestart();
-        Switch sw1 = findViewById(R.id.switch1);
-        if (sw1 != null) {  sw1.setChecked(isAlarmOn[0]); }
-        Switch sw2 = findViewById(R.id.switch2);
-        if (sw2 != null) {  sw2.setChecked(isAlarmOn[1]); }
-        Switch sw3 = findViewById(R.id.switch3);
-        if (sw3 != null) {  sw3.setChecked(isAlarmOn[2]); }
-        Switch sw4 = findViewById(R.id.switch4);
-        if (sw4 != null) {  sw4.setChecked(isAlarmOn[3]); }
+        /*for (int i = 0; i < nAlarms; i++) {
+            int idView = getResources().getIdentifier("switch" + i, "id", getPackageName());
+            Switch sw = findViewById(idView) ;
+            if (sw != null) {
+                sw.setVisibility(View.VISIBLE);
+                sw.setChecked(isAlarmOn[i]);
+            }
+        }*/
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //Save state
+        SharedPreferences.Editor editor = getSharedPreferences("alarms", MODE_PRIVATE).edit();
+        editor.putInt("nAlarms", nAlarms);
+        for (int i = 0; i < nAlarms; i++) {
+            editor.putBoolean("sw"+(i+1), isAlarmOn[i]);
+            editor.putInt("hourAlarm" + (i+1), timeOfAlarm[i][0]);
+            editor.putInt("minuteAlarm" + (i+1), timeOfAlarm[i][1]);
+        }
+        editor.apply();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Switch sw1 = findViewById(R.id.switch1);
-        if (sw1 != null) {  sw1.setChecked(isAlarmOn[0]); }
-        Switch sw2 = findViewById(R.id.switch2);
-        if (sw2 != null) {  sw2.setChecked(isAlarmOn[1]); }
-        Switch sw3 = findViewById(R.id.switch3);
-        if (sw3 != null) {  sw3.setChecked(isAlarmOn[2]); }
-        Switch sw4 = findViewById(R.id.switch4);
-        if (sw4 != null) {  sw4.setChecked(isAlarmOn[3]); }
+        SharedPreferences pref = getSharedPreferences("alarms", MODE_PRIVATE);
+        int savedNAlarms = pref.getInt("nAlarms", 0);
+
+        if (savedNAlarms > 0) {
+            nAlarms = savedNAlarms;
+            for (int i = 0; i < nAlarms; i++) {
+                isAlarmOn[i] = pref.getBoolean("sw"+(i+1), false);
+                timeOfAlarm[i][0] = pref.getInt("hourAlarm" + (i+1), 0);
+                timeOfAlarm[i][1] = pref.getInt("minuteAlarm" + (i+1), 0);
+            }
+        }
     }
 
 
@@ -103,13 +126,16 @@ public class MainActivity extends AppCompatActivity {
     public void addAlarm(View view) {
         if (nAlarms < N_ALARMS_MAX) {
             nAlarms++;
-            ConstraintLayout alarm_view = (ConstraintLayout) view.getParent();
-            int idView = alarm_view.getResources().getIdentifier("switch" + nAlarms, "id", alarm_view.getContext().getPackageName());
+            ConstraintLayout lay = (ConstraintLayout) view.getParent();
+            //int idView = alarm_view.getResources().getIdentifier("switch" + nAlarms, "id", alarm_view.getContext().getPackageName());
             //Switch sw2 = alarm_view.findViewById(R.id.switch2);
-            Switch sw = alarm_view.findViewById(idView);
-            sw.setVisibility(View.VISIBLE);
+            //Switch sw = alarm_view.findViewById(idView);
+            //sw.setVisibility(View.VISIBLE);
+            int idView = lay.getResources().getIdentifier("alarm" + nAlarms, "id", lay.getContext().getPackageName());
+            View alarm = lay.findViewById(idView);
+            alarm.setVisibility(View.VISIBLE);
 
-            alarm_view.findViewById(R.id.button_rm).setVisibility(View.VISIBLE);
+            lay.findViewById(R.id.button_rm).setVisibility(View.VISIBLE);
         }
 
         if (nAlarms == N_ALARMS_MAX) {
@@ -120,19 +146,28 @@ public class MainActivity extends AppCompatActivity {
     /** Called when the user taps the - button */
     public void rmAlarm(View view) {
         if (nAlarms > 1) {
-            ConstraintLayout alarm_view = (ConstraintLayout) view.getParent();
-            int idView = alarm_view.getResources().getIdentifier("switch" + nAlarms, "id", alarm_view.getContext().getPackageName());
-            Switch sw = alarm_view.findViewById(idView);
-            sw.setVisibility(View.GONE);
+            ConstraintLayout lay = (ConstraintLayout) view.getParent();
+            //int idView = lay.getResources().getIdentifier("switch" + nAlarms, "id", lay.getContext().getPackageName());
+            //Switch sw = lay.findViewById(idView);
+            //sw.setVisibility(View.GONE);
+            int idView = lay.getResources().getIdentifier("alarm" + nAlarms, "id", lay.getContext().getPackageName());
+            View alarm = lay.findViewById(idView);
+            alarm.setVisibility(View.GONE);
             nAlarms--;
 
-            alarm_view.findViewById(R.id.button_add).setVisibility(View.VISIBLE);
+            lay.findViewById(R.id.button_add).setVisibility(View.VISIBLE);
         }
 
         if (nAlarms == 1) {
             view.setVisibility(View.GONE);
         }
     }
+
+    /*
+    public void timeSelect(View view) {
+        RelativeLayout rel_layout = (RelativeLayout) view.getParent().getParent();
+        rel_layout.findViewById(R.id.select_screen).setVisibility(View.VISIBLE);
+    }*/
 }
 
 /*
